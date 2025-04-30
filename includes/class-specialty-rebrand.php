@@ -129,11 +129,22 @@ class Specialty_Rebrand {
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-specialty-rebrand-physician-taxonomy.php';
 
+		/**
+		 * The class responsible for defining the admin pages.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-specialty-rebrand-admin-pages.php';
 
+		// Initialize the loader for orchestrating hooks.
 		$this->loader = new Specialty_Rebrand_Loader();
 
+		// Define the custom taxonomy hooks.
 		$taxonomy = new Specialty_Rebrand_Physician_Taxonomy();
-        $taxonomy->define_hooks($this->loader);
+		$taxonomy->define_hooks($this->loader);
+
+		// Define the admin pages hooks.
+		// Note: Ensure admin pages are loaded after taxonomy to avoid dependency issues.
+		$admin_pages = new Specialty_Rebrand_Admin_Pages();
+		$admin_pages->define_hooks($this->loader);
 
 
 	}

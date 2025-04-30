@@ -77,7 +77,9 @@ class Specialty_Rebrand_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, $this->specialty_rebrand_css, array(), $this->version, 'all' );
+		if ( is_page( 'specialties-admin' ) ) {
+			wp_enqueue_style( $this->plugin_name, $this->specialty_rebrand_css, array(), $this->version, 'all' );
+		}
 
 	}
 
@@ -100,7 +102,9 @@ class Specialty_Rebrand_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, $this->specialty_rebrand_js, array( 'jquery' ), $this->version, false );
+		if ( is_page( 'specialties-admin' ) ) {
+			wp_enqueue_script( $this->plugin_name, $this->specialty_rebrand_js, array( 'jquery' ), $this->version, false );
+		}
 
 	}
 
