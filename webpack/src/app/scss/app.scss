@@ -1,0 +1,23 @@
+//  add tailwind css
+@use 'tailwindcss/base';
+@use 'tailwindcss/components';
+@use 'tailwindcss/utilities';
+@use './components/brand-components.scss';
+ 
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+
+* , body{
+  // reset margin and padding
+  margin: 0;
+  padding: 0;
+ 
+ 
+ 
+  
+ 
+  
+}
+
+ 

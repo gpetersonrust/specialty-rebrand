@@ -1,0 +1,188 @@
+// General Styles
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    padding: 0 16px;
+    opacity: 0;
+    transform: translateY(-5px);
+
+    &.active {
+        max-height: 500px;
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Section Header Styling
+.section-header {
+    font-family: "Merriweather", serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: #1C2331; // Darker Than Blood Branding Dark Blue
+    text-align: left;
+    margin-bottom: 24px;
+    padding: 16px 0;
+    border-bottom: 3px solid rgba(0, 0, 0, 0.1);
+}
+
+// Story Row Styling
+.story-row {
+    margin-bottom: 48px;
+    padding: 64px 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    align-self: stretch;
+    flex-shrink: 0;
+    position: relative;
+}
+
+// Responsive Grid for Season Rows
+.sesaon-rows {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr; // Default for mobile
+
+    @media (min-width: 600px) {
+        grid-template-columns: repeat(2, 1fr); // Tablet: 2 columns
+    }
+
+    @media (min-width: 1024px) {
+        grid-template-columns: repeat(3, 1fr); // Desktop: 3 columns
+    }
+}
+
+// Season Card Styling (No Max-Width)
+.season-card-accordion {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.08);
+    padding: 20px 24px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+
+    &:hover {
+        background: #f9f9f9;
+        box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.12);
+    }
+}
+
+// Season Title Styling
+.season-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    font-family: "Open Sans", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333; // Apple Dark Grey
+    border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+    transition: color 0.3s ease-in-out;
+    gap: 12px; // Added proper spacing between text and button
+
+
+    &:hover {
+        color: #1C2331; // Branding Dark Blue
+    }
+}
+
+// Ensuring Proper Flex Behavior
+.season-title-text {
+    flex: 1; // Ensures text takes up remaining space in flex container
+    min-width: 0; // Prevents text from pushing the button
+}
+
+// Updated Expand/Collapse Button - Smaller, Balanced Size & Dark Grey Theme
+.expand-button {
+    width: 28px; // Smaller size
+    height: 28px;
+    flex-shrink: 0; // Prevents shrinking in flexbox
+    border-radius: 6px; // Slightly rounded edges for smoother UI
+    background: #333333; // Apple Dark Grey
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease-in-out;
+
+    svg {
+        width: 14px;
+        height: 14px;
+        fill: white;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    &:hover {
+        background: #444; // Slightly lighter grey on hover
+    }
+
+    &.expanded {
+        background: #666; // Slightly lighter grey for active state
+        svg {
+            transform: rotate(180deg);
+        }
+    }
+}
+
+// Episodes Section
+.episodes-row {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 12px;
+    transition: max-height 0.4s ease-in-out;
+}
+
+// Episode Text Styling
+.episode-text {
+    background: #ffffff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #444;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+
+    &:hover {
+        background: #f4f4f4;
+        transform: translateX(5px);
+    }
+}
+
+// Responsive Tweaks
+@media (max-width: 768px) {
+    .story-row {
+        margin-bottom: 32px; // Reduce margin for smaller screens
+        padding: 48px 0px;
+    }
+
+    .section-header {
+        font-size: 28px;
+        text-align: center;
+    }
+
+    .season-card-accordion {
+        max-width: 100%;
+    }
+
+    .season-title {
+        font-size: 20px;
+    }
+
+    .episode-text {
+        font-size: 16px;
+    }
+
+    .expand-button {
+        width: 26px; // Adjusted slightly for smaller screens
+        height: 26px;
+    }
+
+    .expand-button svg {
+        width: 12px;
+        height: 12px;
+    }
+}
