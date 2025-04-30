@@ -51,13 +51,17 @@ class Specialty_Rebrand_Public {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+		$this->dynamic_hash = $this->dynamic_hash();
+	    $specialty_rebrand_dir = SPECIALTY_REBRAND_URL . 'dist/speciality-rebrand';
+		$this->specialty_rebrand_css = $specialty_rebrand_dir . '/speciality-rebrand' . $this->dynamic_hash . '.css';
+		$this->specialty_rebrand_js = $specialty_rebrand_dir . '/speciality-rebrand' . $this->dynamic_hash . '.js';
 
 	}
 
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.0sas
 	 */
 	public function enqueue_styles() {
 
@@ -73,7 +77,7 @@ class Specialty_Rebrand_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/specialty-rebrand-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, $this->specialty_rebrand_css, array(), $this->version, 'all' );
 
 	}
 
@@ -96,8 +100,26 @@ class Specialty_Rebrand_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/specialty-rebrand-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, $this->specialty_rebrand_js, array( 'jquery' ), $this->version, false );
 
+	}
+
+
+	function dynamic_hash() {
+		$directory_path = plugin_dir_path(dirname(__FILE__, 1)) . 'dist/app/';
+		$files = scandir($directory_path);
+		$first_file = '';
+		foreach ($files as $file) {
+			if (!is_dir($directory_path . $file)) {
+				$first_file = $file;
+				break;
+			}
+		}
+		$hash_parts = explode('-wp', $first_file);
+		$hash = isset($hash_parts[1]) ? $hash_parts[1] : '';
+		$hash_parts = explode('.', $hash);
+		$hash = isset($hash_parts[0]) ? $hash_parts[0] : '';
+		return '-wp' . $hash;
 	}
 
 }

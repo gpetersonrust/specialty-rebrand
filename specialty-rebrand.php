@@ -30,6 +30,10 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+// Define plugin directory path and URL
+define( 'SPECIALTY_REBRAND_DIR', plugin_dir_path( __FILE__ ) );
+define( 'SPECIALTY_REBRAND_URL', plugin_dir_url( __FILE__ ) );
+
 /**
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org

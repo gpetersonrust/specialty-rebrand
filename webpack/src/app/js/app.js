@@ -12,8 +12,10 @@ const App = () => {
 };
 
 
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+if (root) {
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}

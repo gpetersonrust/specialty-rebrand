@@ -9,7 +9,7 @@ from threading import Timer
 THEME_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 # ✅ Set the WordPress URL to reload (Ensures all matching tabs reload)
-BROWSER_SYNC_URL = "http://darker-than-blood-series.local/"
+BROWSER_SYNC_URL = "http://koc-speciality-rebrand.local/"
 
 # ✅ Timer for debounce (Prevents multiple reloads)
 reload_timer = None
