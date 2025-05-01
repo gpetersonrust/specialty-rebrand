@@ -103,7 +103,17 @@ class Specialty_Rebrand_Public {
 		 */
 
 		if ( is_page( 'specialties-admin' ) ) {
-			wp_enqueue_script( $this->plugin_name, $this->specialty_rebrand_js, array( 'jquery' ), $this->version, false );
+			wp_enqueue_script( $this->plugin_name, $this->specialty_rebrand_js, array( 'jquery' ), $this->version, true );
+
+			wp_localize_script(
+				$this->plugin_name,
+				'specialtyRebrandData',
+				array(
+					'siteUrl' => site_url(),
+					'restUrl' => rest_url(),
+					'nonce'   => wp_create_nonce('wp_rest')
+				)
+			);
 		}
 
 	}
