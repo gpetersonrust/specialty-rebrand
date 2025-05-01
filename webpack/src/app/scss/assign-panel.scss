@@ -1,0 +1,104 @@
+.assign-columns {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  .doctor-column {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px; // 4pt × 4
+    min-height: 240px;
+  
+    h3 {
+      font-size: 1.2rem;
+      margin-bottom: 12px; // 4pt × 3
+      color: #56a554;
+      font-weight: 600;
+    }
+  }
+  
+  .doctor-card {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f4f8;
+    border: 1px solid #ddd;
+    padding: 12px; // 4pt × 3
+    border-radius: 6px;
+    margin-bottom: 8px; // 4pt × 2
+    cursor: grab;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  
+    &:hover {
+      background-color: #e8f5ff;
+    }
+  
+    &.selected {
+      background-color: #e0f7ff;
+      border-color: #236194;
+    }
+  
+    .doctor-id {
+      font-size: 0.75rem;
+      color: #717171;
+    }
+  }
+  
+  .koc-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+  
+    label {
+      font-weight: 500;
+      margin-right: 0.5rem;
+    }
+  
+    select {
+      padding: 6px 10px;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-family: 'Roboto', sans-serif;
+      margin-bottom: 0 !important;
+    }
+  }
+
+  
+  .koc-loading-message {
+    font-style: italic;
+    color: #236194;
+    margin-bottom: 1rem;
+    transition: opacity 0.3s ease;
+  }
+
+
+  .doctor-card {
+    opacity: 1;
+    &.drag-overlay {
+      opacity: 0.75;
+      background-color: #dfefff;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      transform: scale(1.02);
+    }
+  }
+
+  .koc-filter input.doctor-search-input {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }

@@ -1,5 +1,7 @@
 // src/styles/app.scss
 
+@use './assign-panel.scss';
+
 :root {
   --color-primary: #236194;
   --color-secondary: #56a554;
@@ -406,3 +408,7 @@ body {
     transform: scale(1);
   }
 }
+
+
+
+// Doctor Column
