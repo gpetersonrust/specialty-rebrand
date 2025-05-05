@@ -53,8 +53,11 @@ class Specialty_Rebrand_Public {
 		$this->version = $version;
 		$this->dynamic_hash = $this->dynamic_hash();
 	    $specialty_rebrand_dir = SPECIALTY_REBRAND_URL . 'dist/speciality-rebrand';
+		$physicians_dir = SPECIALTY_REBRAND_URL . 'dist/physicians';	
 		$this->specialty_rebrand_css = $specialty_rebrand_dir . '/speciality-rebrand' . $this->dynamic_hash . '.css';
 		$this->specialty_rebrand_js = $specialty_rebrand_dir . '/speciality-rebrand' . $this->dynamic_hash . '.js';
+		$this->physicians_css = $physicians_dir . '/physicians' . $this->dynamic_hash . '.css';
+		$this->physicians_js = $physicians_dir . '/physicians' . $this->dynamic_hash . '.js';
 
 	}
 
@@ -76,6 +79,10 @@ class Specialty_Rebrand_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
+
+		if ( is_page( 68 ) ) {
+			wp_enqueue_style( $this->plugin_name . '-physicians', $this->physicians_css, array(), $this->version, 'all' );
+		}
 
 		if ( is_page( 'specialties-admin' ) ) {
 			wp_enqueue_style( $this->plugin_name, $this->specialty_rebrand_css, array(), $this->version, 'all' );
@@ -101,6 +108,10 @@ class Specialty_Rebrand_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
+
+		if ( is_page( 68 ) ) {
+			wp_enqueue_script( $this->plugin_name . '-physicians', $this->physicians_js, array( 'jquery' ), $this->version, true );
+		}
 
 		if ( is_page( 'specialties-admin' ) ) {
 			wp_enqueue_script( $this->plugin_name, $this->specialty_rebrand_js, array( 'jquery' ), $this->version, true );

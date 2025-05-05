@@ -411,4 +411,32 @@ body {
 
 
 
-// Doctor Column
+ 
+
+.koc-control-button{
+  background-color: var(--color-secondary);
+  border: none;
+  border-radius: var(--radius-base);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  padding: .5rem 1rem;
+  transition: background-color .2s ease;
+}
+
+.koc-heading {
+  font-size: 1.44rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-family: 'Roboto', sans-serif;
+  color: #236194;
+
+  .highlight-specialty {
+    font-weight: 700;
+    color: #56a554;
+  }
+}
+
+

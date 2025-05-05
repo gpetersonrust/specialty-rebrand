@@ -1,5 +1,5 @@
 import '../scss/app.scss'; // Import SCSS
-console.log(specialtyRebrandData);
+ 
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
@@ -10,19 +10,34 @@ import ImportExportPanel from './panels/ImportExportPanel';
 
 
 const App = () => {
-  const [activeTab, setActiveTab] = useState('manage');
+  const [activePanel, setActivePanel] = useState('manage');
+  const [selectedSpecialty, setSelectedSpecialty] = useState('');
   const {siteUrl, nonce,restUrl } = specialtyRebrandData;
   const renderPanel = () => {
 
-    switch (activeTab) {
+    switch (activePanel) {
       case 'manage':
-        return <ManagePanel />;
+        return <ManagePanel
+          setActivePanel={setActivePanel}
+          selectedSpecialty={selectedSpecialty}
+          setSelectedSpecialty={setSelectedSpecialty}
+         
+        />;
       case 'assign':
-        return <AssignPanel />;
+        return <AssignPanel
+        
+          setActivePanel={setActivePanel}
+          selectedSpecialty={selectedSpecialty}
+          setSelectedSpecialty={setSelectedSpecialty}
+        />;
       case 'import':
         return <ImportExportPanel />;
       default:
-        return <ManagePanel />;
+        return <ManagePanel
+          setActivePanel={setActivePanel}
+          selectedSpecialty={selectedSpecialty}
+          setSelectedSpecialty={setSelectedSpecialty}
+        />;
     }
   };
 
@@ -30,20 +45,20 @@ const App = () => {
     <div className="koc-layout">
       <aside className="koc-sidebar">
         <button
-          onClick={() => setActiveTab('manage')}
-          className={`koc-sidebar__link ${activeTab === 'manage' ? 'koc-sidebar__link--active' : ''}`}
+          onClick={() => setActivePanel('manage')}
+          className={`koc-sidebar__link ${activePanel === 'manage' ? 'koc-sidebar__link--active' : ''}`}
         >
           Manage Specialties
         </button>
         <button
-          onClick={() => setActiveTab('assign')}
-          className={`koc-sidebar__link ${activeTab === 'assign' ? 'koc-sidebar__link--active' : ''}`}
+          onClick={() => setActivePanel('assign')}
+          className={`koc-sidebar__link ${activePanel === 'assign' ? 'koc-sidebar__link--active' : ''}`}
         >
           Assign Specialties
         </button>
         <button
-          onClick={() => setActiveTab('import')}
-          className={`koc-sidebar__link ${activeTab === 'import' ? 'koc-sidebar__link--active' : ''}`}
+          onClick={() => setActivePanel('import')}
+          className={`koc-sidebar__link ${activePanel === 'import' ? 'koc-sidebar__link--active' : ''}`}
         >
           Import / Export
         </button>

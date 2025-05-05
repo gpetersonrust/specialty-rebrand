@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import CreateTopLevelButton from './components/Manage Panel/ CreateTopLevelButton';
 import SpecialtyFormModal from './components/Manage Panel/SpecialtyFormModal';
 
-const ManagePanel = () => {
+const ManagePanel = ({ setActivePanel, selectedSpecialty, setSelectedSpecialty }) => {
   const [flatTree, setFlatTree] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -122,9 +122,10 @@ const ManagePanel = () => {
                 <h3>{node.name}</h3>
               </div>
               <div className="specialty-actions">
-                <button onClick={() => openForm('add', node)}>➕</button>
-                <button onClick={() => openForm('edit', node)}>✏️</button>
-                <button onClick={() => handleDelete(node.id)}>🗑️</button>
+                <button className="btn btn-add" onClick={() => openForm('add', node)} title="Add child specialty">➕ Add</button>
+                <button className="btn btn-edit" onClick={() => openForm('edit', node)} title="Edit specialty">✏️ Edit</button>
+                <button className="btn btn-delete" onClick={() => handleDelete(node.id)} title="Delete specialty">🗑️ Delete</button>
+                <button className="btn btn-assign" onClick={() => { setSelectedSpecialty(node); setActivePanel('assign'); }} title="Assign physicians to this specialty">🧬 Assign</button>
               </div>
             </div>
           ))}

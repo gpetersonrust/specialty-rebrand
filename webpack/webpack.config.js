@@ -12,6 +12,7 @@ module.exports = {
   entry: {
     app: path.resolve(__dirname, 'src', 'app', 'js', 'app.js'),
     ['speciality-rebrand']: path.resolve(__dirname, 'src', 'app', 'js', 'app.js'),
+    physicians: path.resolve(__dirname, 'src', 'physicians', 'js', 'physicians.js'),
   },
   output: {
     publicPath: '/',

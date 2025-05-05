@@ -139,6 +139,11 @@ class Specialty_Rebrand {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-specialty-rebrand-api.php';
 
+		/**
+		 * The class responsible for defining the shortcodes.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-specialty-rebrand-shortcodes.php';
+
 		
 
 		// Initialize the loader for orchestrating hooks.
@@ -153,6 +158,7 @@ class Specialty_Rebrand {
 			new Specialty_Rebrand_Physician_Taxonomy(),
 			new Specialty_Rebrand_Admin_Pages(),
 			new Specialty_Rebrand_API(),
+			new Specialty_Rebrand_Shortcodes(),
 		];
 
 		foreach ( $components as $component ) {

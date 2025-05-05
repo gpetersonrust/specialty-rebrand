@@ -68,6 +68,20 @@ class Specialty_Rebrand_API {
                 'callback' => 'get_doctors_by_specialty',
                 'permission_callback' => 'validate_rest_nonce',
               ),
+
+              array(
+                'route'    => 'export/json',
+                'methods'  => 'GET',
+                'callback' => 'handle_export_json',
+                'permission_callback' => 'validate_rest_nonce',
+              ),
+              array(
+                'route'    => '/import',
+                'methods'  => 'POST',
+                'callback' => 'handle_import_data',
+                'permission_callback' => 'validate_rest_nonce',
+              ),
+              
         );
 
         // Loop through the routes and register them
@@ -151,7 +165,7 @@ public function get_specialties($request) {
      */
     public function create_specialty($request) {
         $name = sanitize_text_field($request->get_param('name'));
-        $adult_name = sanitize_text_field($request->get_param('adult_name'));
+        $adult_id = sanitize_text_field($request->get_param('adult_name'));
 
         if (empty($name)) {
             return new WP_Error('missing_name', 'Name is required', array('status' => 400));
@@ -160,8 +174,8 @@ public function get_specialties($request) {
         $parent_id = 0;
 
         // If an adult name was provided, look up the parent term
-        if (!empty($adult_name)) {
-            $parent_term = get_term_by('name', $adult_name, 'specialty_area');
+        if (!empty($adult_id)) {
+            $parent_term = get_term_by('id', $adult_id, 'specialty_area');
 
             if ($parent_term && !is_wp_error($parent_term)) {
                 $parent_id = (int) $parent_term->term_id;
@@ -185,7 +199,7 @@ public function get_specialties($request) {
             'id'         => $term->term_id,
             'name'       => $term->name,
             'parent'     => $parent_id,
-            'parentName' => $adult_name,
+            'parentName' => $adult_id,
         ));
     }
 
@@ -391,6 +405,168 @@ public function get_specialties($request) {
         return rest_ensure_response([
             'assigned'   => $assigned,
             'unassigned' => $unassigned,
+        ]);
+    }
+    
+
+    public function handle_export_json($request) {
+        $terms = get_terms([
+            'taxonomy'   => 'specialty_area',
+            'hide_empty' => false,
+        ]);
+    
+        $term_data = array_map(function($term) {
+            return [
+                'id'     => $term->term_id,
+                'name'   => $term->name,
+                'slug'   => $term->slug,
+                'parent' => $term->parent,
+            ];
+        }, $terms);
+    
+        $physicians = get_posts([
+            'post_type'      => 'physician',
+            'posts_per_page' => -1,
+            'post_status'    => 'publish',
+        ]);
+    
+        $assignment_data = [];
+    
+        foreach ($physicians as $post) {
+            $physician_id = $post->ID;
+            $name = get_the_title($post);
+            $term_ids = wp_get_object_terms($physician_id, 'specialty_area', ['fields' => 'ids']);
+    
+            $assignment_data[] = [
+                'physician_id' => $physician_id,
+                'name'         => $name,
+                'term_ids'     => array_map('intval', $term_ids),
+            ];
+        }
+    
+        $payload = [
+            'terms'      => $term_data,
+            'assignments' => $assignment_data,
+        ];
+    
+        return rest_ensure_response($payload);
+    }
+
+
+
+   
+   public function handle_import_data($request) {
+        $data = $request->get_json_params(); // Get the JSON payload
+    
+        if (!is_array($data) || !isset($data['terms'], $data['assignments'])) {
+            return new WP_Error('invalid_payload', 'Malformed JSON data', array('status' => 400));
+        }
+    
+        $imported_terms = array_map('wp_parse_args', $data['terms']);
+        $assignments    = array_map('wp_parse_args', $data['assignments']);
+    
+        $re_mapped_terms = []; // old_id => new_id
+        $term_lookup     = []; // old_id => full term data
+        $created_terms   = [];
+        $skipped_physicians = [];
+        $assigned_physicians = [];
+    
+        // Build lookup map for terms by original ID
+        foreach ($imported_terms as $term) {
+            $term_id = isset($term['id']) ? (int) $term['id'] : null;
+            if ($term_id) {
+                $term_lookup[$term_id] = [
+                    'name'   => sanitize_text_field($term['name']),
+                    'slug'   => sanitize_title($term['slug']),
+                    'parent' => isset($term['parent']) ? (int) $term['parent'] : 0,
+                ];
+            }
+        }
+    
+        // Recursive term importer
+        $import_term = function($old_term_id) use (&$import_term, $term_lookup, &$re_mapped_terms, &$created_terms) {
+            if (isset($re_mapped_terms[$old_term_id])) {
+                return $re_mapped_terms[$old_term_id];
+            }
+    
+            if (!isset($term_lookup[$old_term_id])) {
+                return null;
+            }
+    
+            $term = $term_lookup[$old_term_id];
+            $resolved_parent = 0;
+    
+            if ($term['parent'] && isset($term_lookup[$term['parent']])) {
+                $resolved_parent = $import_term($term['parent']);
+            }
+    
+            $existing = get_term($old_term_id, 'specialty_area');
+            if ($existing && !is_wp_error($existing) &&
+                $existing->slug === $term['slug'] &&
+                html_entity_decode($existing->name) === $term['name']) {
+                $re_mapped_terms[$old_term_id] = $old_term_id;
+                return $old_term_id;
+            }
+    
+            $res = wp_insert_term($term['name'], 'specialty_area', [
+                'slug'   => $term['slug'],
+                'parent' => $resolved_parent,
+            ]);
+    
+            if (is_wp_error($res)) {
+                return null;
+            }
+    
+            $new_id = (int) $res['term_id'];
+            $re_mapped_terms[$old_term_id] = $new_id;
+            $created_terms[] = $new_id;
+    
+            return $new_id;
+        };
+    
+        // Import top-level terms first
+        foreach ($term_lookup as $term_id => $term) {
+            if ($term['parent'] === 0) {
+                $import_term($term_id);
+            }
+        }
+    
+        // Import remaining nested terms
+        foreach ($term_lookup as $term_id => $term) {
+            $import_term($term_id); // map will short-circuit
+        }
+    
+        // Process physician assignments
+        foreach ($assignments as $entry) {
+            $physician_id = isset($entry['physician_id']) ? (int) $entry['physician_id'] : 0;
+            $physician_name = sanitize_text_field($entry['name'] ?? '');
+            $term_ids = array_filter(array_map('intval', $entry['term_ids'] ?? []));
+    
+            $post = get_post($physician_id);
+            if (!$post || $post->post_type !== 'physician' || $post->post_title !== $physician_name) {
+                $skipped_physicians[] = $physician_id;
+                continue;
+            }
+    
+            $mapped_ids = [];
+            foreach ($term_ids as $old_id) {
+                $mapped = $re_mapped_terms[$old_id] ?? $old_id;
+                $term_check = get_term($mapped, 'specialty_area');
+                if ($term_check && !is_wp_error($term_check)) {
+                    $mapped_ids[] = $mapped;
+                }
+            }
+    
+            wp_set_object_terms($physician_id, $mapped_ids, 'specialty_area');
+            $assigned_physicians[] = $physician_id;
+        }
+    
+        return rest_ensure_response([
+            'message'             => 'Import completed.',
+            'remapped_terms'      => $re_mapped_terms,
+            'created_term_count'  => count($created_terms),
+            'assigned_physicians' => $assigned_physicians,
+            'skipped_physicians'  => $skipped_physicians,
         ]);
     }
     

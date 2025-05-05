@@ -100,5 +100,24 @@
     width: 100%;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
-    margin-bottom: 1rem;
+ 
+    margin-bottom: 0 !important;
   }
+
+  .koc-filter-row {
+    
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  
+    input {
+      flex: 1 1 auto;
+    }
+  
+    button {
+      flex-shrink: 0;
+    }
+  }
+
+
