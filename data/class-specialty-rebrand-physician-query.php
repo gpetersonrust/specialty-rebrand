@@ -17,6 +17,9 @@ class Specialty_Rebrand_Physician_Query {
      * Returns physicians by term slug (single term, no children).
      */
     public function get_physicians_by_term_slug($term_slug = null) {
+
+ 
+       
         $args = [
             'post_type' => 'physician',
             'posts_per_page' => -1,
@@ -33,6 +36,7 @@ class Specialty_Rebrand_Physician_Query {
             ];
         }
 
+ 
         $query = new WP_Query($args);
         $posts = [];
 
@@ -44,6 +48,9 @@ class Specialty_Rebrand_Physician_Query {
                     'job_title' => get_field('title'),
                     'featured_image' => get_the_post_thumbnail_url(get_the_ID(), 'full'),
                     'permalink' => get_permalink(),
+                    'specialties' => wp_get_post_terms(get_the_ID(), 'specialty_area', ['fields' => 'names']),
+                    'id' => get_the_ID(),
+                    'locations' => trim(preg_replace('/\s+/', ' ', wp_strip_all_tags(get_field('office_location')))),
                 ];
             }
             wp_reset_postdata();
@@ -58,6 +65,7 @@ class Specialty_Rebrand_Physician_Query {
      */
     public function get_child_terms_with_physicians($term_id) {
         $children = get_term_children($term_id, 'specialty_area');
+        
         $result = [];
 
         foreach ($children as $child_id) {
@@ -99,5 +107,8 @@ class Specialty_Rebrand_Physician_Query {
         $cmp = strcasecmp($nameA['last'], $nameB['last']);
         return $cmp === 0 ? strcasecmp($nameA['first'], $nameB['first']) : $cmp;
     }
+
+
+    
 }
 ?>

@@ -11,6 +11,7 @@ $term_children_objects = $term && $term->parent != 0
     : [];
 ?>
 
+
 <div class="filters">
     <div class="expert-filter-container">
         <select class="button-group expert-filter" data-filter-group="specialty" id="specialty-dropdown">
@@ -29,9 +30,10 @@ $term_children_objects = $term && $term->parent != 0
         </select>
     </div>
 
+
     <div class="expert-filter-container">
         <select class="button-group expert-filter" data-filter-group="location" id="location-dropdown">
-            <option class="button" data-filter=".">All Locations</option>
+            <option class="button" data-filter="." selected>All Locations</option>
             <option class="button" data-filter=".harriman">Harriman</option>
             <option class="button" data-filter=".lakeway">Lakeway</option>
             <option class="button" data-filter=".maryville">Maryville</option>
@@ -55,11 +57,20 @@ $term_children_objects = $term && $term->parent != 0
 <!-- <div id="expert-loader" class="expert-loader" style="display: none;">
   <div class="spinner"></div>
 </div> -->
+<div id="expert-loader" class="expert-loader" style="display: none;">
+  <div class="spinner"></div>
+</div>
 
+<div id="expert-grid-container"> 
 <?php if (!empty($physician_posts)) : ?>
   <div class="expert-grid">
-    <?php foreach ($physician_posts as $physician) : ?>
-      <div class="expert-card">
+    <?php foreach ($physician_posts as $physician) : 
+       
+        ?>
+      <div
+        data-location="<?php echo esc_attr(sanitize_title(str_replace("\n", " ", $physician['locations']))); ?>"
+        data-specialties="<?php echo esc_attr(implode(' ', array_map('sanitize_title', $physician['specialties']))); ?>"  
+      class="expert-card">
         <a href="<?php echo esc_url($physician['permalink']); ?>">
           <img src="<?php echo esc_url($physician['featured_image']); ?>" alt="<?php echo esc_attr($physician['name']); ?>">
           <div class="expert-grid-title">
@@ -81,7 +92,11 @@ $term_children_objects = $term && $term->parent != 0
       <h3 class="expert-section-heading"><?php echo esc_html($group_name); ?></h3>
       <div class="expert-grid">
         <?php foreach ($posts as $physician) : ?>
-          <div class="expert-card">
+          <div 
+          
+          data-location="<?php echo esc_attr(sanitize_title(str_replace("\n", " ", $physician['locations']))); ?>"
+          data-specialty="<?php echo esc_attr(implode(' ', array_map('sanitize_title', $physician['specialties']))); ?>"
+          class="expert-card">
             <a href="<?php echo esc_url($physician['permalink']); ?>">
               <img src="<?php echo esc_url($physician['featured_image']); ?>" alt="<?php echo esc_attr($physician['name']); ?>">
               <div class="expert-grid-title">
@@ -97,52 +112,5 @@ $term_children_objects = $term && $term->parent != 0
 <?php endif; ?>
 
 
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const menu = document.querySelector('#menu-item-1829 > .sub-menu');
-  const dropdown = document.getElementById('specialty-dropdown');
-
-  // Clear existing options except the "All Specialties"
-  dropdown.innerHTML = '<option class="button is-checked" value="all" data-filter="" selected>All Specialties</option>';
-
-  // Utility: slugify text for use as value/filter
-  function slugify(text) {
-    return text.toLowerCase().replace(/&/g, 'and').replace(/[^\w]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-  }
-
-  // Iterate menu items
-  menu.querySelectorAll(':scope > li').forEach(parentItem => {
-    const parentAnchor = parentItem.querySelector(':scope > a .x-anchor-text-primary');
-    const parentLabel = parentAnchor ? parentAnchor.textContent.trim() : null;
-
-    const childMenu = parentItem.querySelector(':scope > .sub-menu');
-    if (childMenu) {
-      // Create an optgroup
-      const optgroup = document.createElement('optgroup');
-      optgroup.label = parentLabel;
-
-      childMenu.querySelectorAll(':scope > li').forEach(childItem => {
-        const childAnchor = childItem.querySelector('.x-anchor-text-primary');
-        if (childAnchor) {
-          const option = document.createElement('option');
-          const text = childAnchor.textContent.trim();
-          option.textContent = text;
-          option.value = slugify(text); // Or extract from href param if needed
-          option.setAttribute('data-filter', `.${option.value}`);
-          optgroup.appendChild(option);
-        }
-      });
-
-      dropdown.appendChild(optgroup);
-    } else if (parentLabel) {
-      // No children; just a regular option
-      const option = document.createElement('option');
-      option.textContent = parentLabel;
-      option.value = slugify(parentLabel);
-      option.setAttribute('data-filter', `.${option.value}`);
-      dropdown.appendChild(option);
-    }
-  });
-});
-</script>
+ 
+</div>
